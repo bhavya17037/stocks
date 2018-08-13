@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         stockData[stockIndex][1] = data.getClose();
     }
 
-    // Make sure to call make all necessary http requests before calling populateListView
+    // Make sure to make all necessary http requests before calling populateListView
     // This should be called in the end, when all json data is parsed, and stockData is filled
     public void PopulateListView(){
 
