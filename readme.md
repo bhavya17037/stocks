@@ -1,1 +1,1 @@
-simple readme
+simple readme for the app
