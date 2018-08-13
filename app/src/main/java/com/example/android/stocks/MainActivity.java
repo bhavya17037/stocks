@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
-
-<<<<<<< HEAD
     // Add code for refresh button click
     // When refresh button is clicked, iterate through each element of stockNames, and make
     // an http call for each stock. Load 20 stocks in one page (for simplicity).
@@ -116,8 +114,6 @@ public class MainActivity extends AppCompatActivity {
         stockList.setAdapter(stockAdapter);
     }
 
-
-=======
     public void makeStockSearch() {
         
     }
@@ -139,5 +135,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
->>>>>>> app/src/main/java/com/example/android/stocks/MainActivity.java: Create functions to populate the menu wih items
+
 }
