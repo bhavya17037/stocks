@@ -1,5 +1,6 @@
 package com.example.android.stocks;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -12,6 +13,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.android.stocks.utilities.NetworkUtils;
+
+import java.net.URL;
 import java.util.ArrayList;
 
 // Create item.xml to store the listView which shows stock data
@@ -30,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextMessage;
     private parser jsonParser = new parser();;
     private Button refresh;
-    private String[] stockNames;
+    private String[] stockNames = {"MSFT","AAPL","TXN","WMT","INTC","GOOG","HOG","HPQ","T"};
 
     // Each element of stockData is of the format - (name, close)
     // Get a list of stock symbols of the US stock exchange, and store it in an arrayList or array.
@@ -64,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        refresh = (Button) findViewById(R.id.refresh_button);
-
         // Fill stockNames with data here ---
 
         stockData = new String[stockNames.length][2];
@@ -77,12 +79,6 @@ public class MainActivity extends AppCompatActivity {
     // When refresh button is clicked, iterate through each element of stockNames, and make
     // an http call for each stock. Load 20 stocks in one page (for simplicity).
     // Each time, when json is received for each stock, call populateStockData.
-
-    public void RefreshButtonClicked(View v){
-
-
-
-    }
 
     // stockIndex is nothing but the index of the stock in the array stockNames
     // This is called with each http request (once for each stock)
@@ -115,9 +111,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void makeStockSearch() {
-        
+
+
+        for (int i = 0; i < stockNames.length; i++) {
+            URL url = NetworkUtils.buildUrl(stockNames[i]);
+
+
+
+        }
+
     }
 
+    public class populateStockInfo extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... urls) {
+
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
