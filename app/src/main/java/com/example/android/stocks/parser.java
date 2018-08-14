@@ -24,7 +24,12 @@ public class parser {
     public tuple parseJSON(String json){
 
         try{
+
             JSONObject obj = new JSONObject(json);
+
+            if(obj.has("Error Message")){
+                return null;
+            }
 
             JSONObject Meta = obj.getJSONObject("Meta Data");
             JSONObject Time = obj.getJSONObject("Time Series (Daily)");

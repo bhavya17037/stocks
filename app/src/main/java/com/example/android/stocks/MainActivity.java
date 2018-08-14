@@ -89,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void populateStockData(String JSON, int stockIndex){
         tuple data = jsonParser.parse(JSON, 1);
+        if(data == null){
+            stockData[stockIndex][0] = "Undefined";
+            stockData[stockIndex][1] = "Undefined";
+            return;
+        }
         stockData[stockIndex][0] = data.getName();
         stockData[stockIndex][1] = data.getClose();
     }
