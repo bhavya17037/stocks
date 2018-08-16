@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private parser jsonParser = new parser();
     private Button refresh;
     //private String[] stockNames = {"MSFT","AAPL","TXN","WMT","INTC","GOOG","HOG","HPQ","T"};
-    private String[] stockNames = {"MSFT","AAPL"};
+    private String[] stockNames = {"MSFT","AAPL","TXN","WMT"};
     private static int count = 0;
     //private TextView temp;
 
@@ -138,10 +138,9 @@ public class MainActivity extends AppCompatActivity {
         while(index < stockNames.length) {
             URL url = NetworkUtils.buildUrl(stockNames[index]);
 
-            new populateStockInfo().execute(url).get();
+            new populateStockInfo().execute(url);
             index++;
         }
-        PopulateListView();
     }
 
     public class populateStockInfo extends AsyncTask<URL, Void, String> {
@@ -165,6 +164,9 @@ public class MainActivity extends AppCompatActivity {
             if (s != null && !s.equals("")) {
                 //temp.setText(s);
                 populateStockData(s);
+                if(count == stockNames.length){
+                    PopulateListView();
+                }
             }
         }
     }
@@ -181,7 +183,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemThatWasSelected = item.getItemId();
         if (itemThatWasSelected == R.id.refreshing) {
-            makeStockSearch();
+            try {
+                makeStockSearch();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
