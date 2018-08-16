@@ -1,5 +1,7 @@
 package com.example.android.stocks;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Iterator;
@@ -28,6 +30,7 @@ public class parser {
             JSONObject obj = new JSONObject(json);
 
             if(obj.has("Error Message")){
+                Log.d("error", "parseJSON: error ");
                 return null;
             }
 
@@ -45,10 +48,13 @@ public class parser {
             String low = DJSON.getString("3. low");
             String volume = DJSON.getString("5. volume");
 
+            Log.d("closing", "parseJSON: " + close);
+
             return new tuple(symbol, open, close, high, low, volume);
 
         }catch(JSONException e){
             e.printStackTrace();
+            Log.d("exception", "parseJSON: erxception");
         };
 
         return null;

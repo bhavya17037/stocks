@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class NetworkUtils {
 
 
-    final static String SearchQuery = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&interval=1min&apikey=GJX95WU3CGMSBH7Y";
+    final static String SearchQuery = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&interval=1min&apikey=GJX95WU3CGMSBH7Y";
 
     final static String ParamStock = "symbol";
 

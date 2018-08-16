@@ -11,4 +11,6 @@
         android:text="Large Text"
         android:id="@+id/stock_data" />
 
+
+
 </LinearLayout>

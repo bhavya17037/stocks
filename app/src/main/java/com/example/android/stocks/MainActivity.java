@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,8 +16,11 @@ import android.widget.TextView;
 
 import com.example.android.stocks.utilities.NetworkUtils;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 // Create item.xml to store the listView which shows stock data
 
@@ -32,9 +36,13 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
-    private parser jsonParser = new parser();;
+    private parser jsonParser = new parser();
     private Button refresh;
-    private String[] stockNames = {"MSFT","AAPL","TXN","WMT","INTC","GOOG","HOG","HPQ","T"};
+    //private String[] stockNames = {"MSFT","AAPL","TXN","WMT","INTC","GOOG","HOG","HPQ","T"};
+    private String[] stockNames = {"MSFT","AAPL"};
+    private static int count = 0;
+    //private TextView temp;
+
 
     // Each element of stockData is of the format - (name, close)
     // Get a list of stock symbols of the US stock exchange, and store it in an arrayList or array.
@@ -71,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         // Fill stockNames with data here ---
 
         stockData = new String[stockNames.length][2];
+        //temp = (TextView) findViewById(R.id.tempo);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -80,18 +89,22 @@ public class MainActivity extends AppCompatActivity {
     // an http call for each stock. Load 20 stocks in one page (for simplicity).
     // Each time, when json is received for each stock, call populateStockData.
 
-    // stockIndex is nothing but the index of the stock in the array stockNames
+    // count is nothing but the index of the stock in the array stockNames
     // This is called with each http request (once for each stock)
 
-    public void populateStockData(String JSON, int stockIndex){
+    public void populateStockData(String JSON){
         tuple data = jsonParser.parse(JSON, 1);
+        Log.d("index",String.valueOf(count));
+        Log.d("closingPrice", "populateStockData: " + (String) data.getClose());
         if(data == null){
-            stockData[stockIndex][0] = "Undefined";
-            stockData[stockIndex][1] = "Undefined";
+            stockData[count][0] = "Undefined";
+            stockData[count][1] = "Undefined";
             return;
         }
-        stockData[stockIndex][0] = data.getName();
-        stockData[stockIndex][1] = data.getClose();
+        stockData[count][0] = data.getName();
+        stockData[count][1] = data.getClose();
+        count++;
+
     }
 
     // Make sure to make all necessary http requests before calling populateListView
@@ -99,9 +112,13 @@ public class MainActivity extends AppCompatActivity {
     public void PopulateListView(){
 
         String[] stocks = new String[stockData.length];
-        for(int i = 0; i < stocks.length; i++){
+        for(int i = 0; i < stockData.length; i++){
             stocks[i] = stockData[i][0] + " -- " + stockData[i][1];
+            //Log.d("stock",stockData[i][0]);
+            //Log.d("STOCKSS",stocks[i]);
         }
+
+
 
         ArrayAdapter<String> stockAdapter =
                 new ArrayAdapter<String>(this,
@@ -115,25 +132,43 @@ public class MainActivity extends AppCompatActivity {
         stockList.setAdapter(stockAdapter);
     }
 
-    public void makeStockSearch() {
+    public void makeStockSearch() throws InterruptedException {
+        int index = 0;
 
+        while(index < stockNames.length) {
+            URL url = NetworkUtils.buildUrl(stockNames[index]);
 
-        for (int i = 0; i < stockNames.length; i++) {
-            URL url = NetworkUtils.buildUrl(stockNames[i]);
-
-
-
+            new populateStockInfo().execute(url).get();
+            index++;
         }
-
+        PopulateListView();
     }
 
     public class populateStockInfo extends AsyncTask<URL, Void, String> {
 
         @Override
         protected String doInBackground(URL... urls) {
+            URL searchUrl = urls[0];
+            String searchResult = null;
 
+            try {
+                searchResult = NetworkUtils.getResponseFromUrl(searchUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return searchResult;
+        }
+
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (s != null && !s.equals("")) {
+                //temp.setText(s);
+                populateStockData(s);
+            }
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
